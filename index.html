@@ -871,6 +871,62 @@
       letter-spacing: 1px;
       color: var(--slate)
     }
+
+    /* ─── photos page ─── */
+    .photos-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 24px 80px
+    }
+
+    .photos-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      color: var(--bone)
+    }
+
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px
+    }
+
+    .photo-tile {
+      position: relative;
+      aspect-ratio: 4/3;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(232, 230, 222, .18);
+      background: #0d0e10
+    }
+
+    .photo-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .4s ease
+    }
+
+    .photo-tile:hover img {
+      transform: scale(1.05)
+    }
+
+    .photo-tile-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--slate);
+      text-align: center;
+      padding: 10px
+    }
   </style>
 </head>
 
@@ -884,6 +940,7 @@
       <div class="menu-label">Eendrag</div>
       <a class="menu-item" onclick="closeMenu(); openCalendar();">Events</a>
       <a class="menu-item" onclick="closeMenu(); openStats();">Analytics &amp; Stats</a>
+      <a class="menu-item" onclick="closeMenu(); openPhotos();">Photos</a>
       <a class="menu-item" onclick="return false">House Leaders</a>
       <a class="menu-item" onclick="return false">History</a>
       <a class="menu-item" onclick="return false">Sports</a>
@@ -1092,6 +1149,37 @@
     </div>
   </div>
 
+  <!-- ══════════════ PHOTOS ══════════════ -->
+  <div class="legal-page" id="legal-photos">
+    <div class="legal-bg"><img src="hero.jpg" alt="" /></div>
+    <div class="legal-scrim"></div>
+    <div class="legal-topbar">
+      <button class="legal-back" onclick="closeLegal()">← Back</button>
+      <div class="legal-brand">EEN<span>D</span>RAG</div>
+    </div>
+    <div class="photos-scroll">
+      <div class="photos-inner">
+        <div>
+          <div class="legal-title">Photos</div>
+          <div class="legal-updated">A look at life inside the house</div>
+        </div>
+
+        <div class="legal-section">
+          <div class="legal-label">Gallery</div>
+          <div class="photos-grid" id="photos-grid">
+            <div class="photo-tile"><img src="hero.jpg" alt="Eendrag" /></div>
+            <div class="photo-tile"><div class="photo-tile-empty">Add photo</div></div>
+            <div class="photo-tile"><div class="photo-tile-empty">Add photo</div></div>
+            <div class="photo-tile"><div class="photo-tile-empty">Add photo</div></div>
+            <div class="photo-tile"><div class="photo-tile-empty">Add photo</div></div>
+            <div class="photo-tile"><div class="photo-tile-empty">Add photo</div></div>
+          </div>
+          <div class="legal-body" style="margin-top:26px;">This gallery is just getting started — drop more image files into the same folder as this page and swap them into the tiles above as they come in.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     function toggleMenu() {
       var btn = document.getElementById('hamburger-btn');
@@ -1103,10 +1191,26 @@
       document.getElementById('hamburger-btn').classList.remove('open');
       document.getElementById('menu-overlay').classList.remove('visible');
     }
+    // The hamburger is only ever for reaching a page from the hero — once on
+    // a page, the "← Back" button is the only way to navigate, so the
+    // hamburger hides itself whenever any overlay page is open.
+    function hideHamburger() {
+      document.getElementById('hamburger-btn').style.display = 'none';
+    }
+    function showHamburger() {
+      document.getElementById('hamburger-btn').style.display = 'flex';
+    }
     function openStats() {
       document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
       document.getElementById('legal-stats').classList.add('visible');
       setActivePage('legal-stats');
+      hideHamburger();
+    }
+    function openPhotos() {
+      document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
+      document.getElementById('legal-photos').classList.add('visible');
+      setActivePage('legal-photos');
+      hideHamburger();
     }
 
     // ─── page persistence — whichever overlay (Terms / Privacy / Calendar /
@@ -1123,10 +1227,12 @@
       document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
       document.getElementById('legal-' + which).classList.add('visible');
       setActivePage('legal-' + which);
+      hideHamburger();
     }
     function closeLegal() {
       document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
       setActivePage(null);
+      showHamburger();
     }
 
     // ─── CALENDAR ─── edit EVENTS directly to add/change/remove house events. date is 'YYYY-MM-DD'.
@@ -1153,6 +1259,7 @@
       calRender();
       document.getElementById('legal-calendar').classList.add('visible');
       setActivePage('legal-calendar');
+      hideHamburger();
     }
 
     function calChangeMonth(dir) {
@@ -1244,6 +1351,8 @@
         openCalendar();
       } else if (saved === 'legal-stats') {
         openStats();
+      } else if (saved === 'legal-photos') {
+        openPhotos();
       } else if (saved.indexOf('legal-') === 0) {
         var which = saved.slice('legal-'.length);
         if (document.getElementById('legal-' + which)) openLegal(which);
