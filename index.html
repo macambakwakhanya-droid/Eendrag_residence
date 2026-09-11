@@ -1794,15 +1794,16 @@
       document.getElementById('sport-detail-body').innerHTML = s.body;
       document.getElementById('sport-join-btn').textContent = 'Join Eendrag ' + s.title;
 
-      // Always show a safe, always-available background immediately —
-      // no flash of transparency while the real photo is checked/loaded.
+      // Set the real background straight away — it's already preloaded/cached
+      // by preloadSportBackgrounds(), so this shows instantly. Only fall back
+      // to hero.jpg if the image genuinely fails to load.
       var bgEl = document.getElementById('sport-detail-bg');
-      bgEl.src = 'hero.jpg';
       if (s.bg) {
-        var test = new Image();
-        test.onload = function () { bgEl.src = s.bg; };
-        // onerror intentionally does nothing — hero.jpg stays as the fallback
-        test.src = s.bg;
+        bgEl.onerror = function () { bgEl.onerror = null; bgEl.src = 'hero.jpg'; };
+        bgEl.src = s.bg;
+      } else {
+        bgEl.onerror = null;
+        bgEl.src = 'hero.jpg';
       }
 
       document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
