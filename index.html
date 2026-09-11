@@ -360,7 +360,8 @@
     .legal-bg {
       position: fixed;
       inset: 0;
-      z-index: -1
+      z-index: -1;
+      background: var(--ink)
     }
 
     .legal-bg img {
@@ -1528,7 +1529,8 @@
           <div class="float-card" onclick="openSportDetail('frisbee')"><span class="float-card-inner"><span class="float-card-index">07</span><span class="float-card-title">Frisbee</span></span></div>
           <div class="float-card" onclick="openSportDetail('chess')"><span class="float-card-inner"><span class="float-card-index">08</span><span class="float-card-title">Chess</span></span></div>
           <div class="float-card" onclick="openSportDetail('table-tennis')"><span class="float-card-inner"><span class="float-card-index">09</span><span class="float-card-title">Table Tennis</span></span></div>
-          <div class="float-card" onclick="openSportDetail('speed-eating')"><span class="float-card-inner"><span class="float-card-index">10</span><span class="float-card-title">Speed Eating</span></span></div>
+          <div class="float-card" onclick="openSportDetail('tennis')"><span class="float-card-inner"><span class="float-card-index">10</span><span class="float-card-title">Tennis</span></span></div>
+          <div class="float-card" onclick="openSportDetail('speed-eating')"><span class="float-card-inner"><span class="float-card-index">11</span><span class="float-card-title">Speed Eating</span></span></div>
         </div>
       </div>
     </div>
@@ -1536,7 +1538,7 @@
 
   <!-- ══════════════ SPORT DETAIL (dynamic — filled by openSportDetail()) ══════════════ -->
   <div class="legal-page" id="legal-sport-detail">
-    <div class="legal-bg"><img id="sport-detail-bg" src="hero.jpg" alt="" onerror="this.onerror=null;this.src='hero.jpg';" /></div>
+    <div class="legal-bg"><img id="sport-detail-bg" src="hero.jpg" alt="" /></div>
     <div class="legal-scrim"></div>
     <div class="legal-topbar">
       <button class="legal-back" onclick="openLegal('sports')">← Back</button>
@@ -1671,15 +1673,35 @@
       frisbee: { title: 'Frisbee', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best frisbee moments will be added here once the season is underway.', bg: 'sport-frisbee.jpg' },
       chess: { title: 'Chess', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best chess moments will be added here once the season is underway.', bg: 'sport-chess.JPG' },
       'table-tennis': { title: 'Table Tennis', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best table tennis moments will be added here once the season is underway.', bg: 'sport-tennis-table.JPG' },
+      tennis: { title: 'Tennis', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best tennis moments will be added here once the season is underway.', bg: 'sport-tennis.png' },
       'speed-eating': { title: 'Speed Eating', updated: 'House &amp; interres events', body: 'Placeholder — Eendrag\'s best speed eating moments will be added here once the season is underway.', bg: 'sport-speed-eating.jpg' }
     };
+    // preload every sport background in the background, so clicking a sport card
+    // swaps to an already-cached image instead of waiting on a fresh network fetch
+    (function preloadSportBackgrounds() {
+      Object.keys(SPORTS_DATA).forEach(function (key) {
+        var bg = SPORTS_DATA[key].bg;
+        if (bg) { var img = new Image(); img.src = bg; }
+      });
+    })();
     function openSportDetail(key) {
       var s = SPORTS_DATA[key];
       if (!s) return;
       document.getElementById('sport-detail-title').textContent = s.title;
       document.getElementById('sport-detail-updated').innerHTML = s.updated;
       document.getElementById('sport-detail-body').innerHTML = s.body;
-      document.getElementById('sport-detail-bg').src = s.bg || 'hero.jpg';
+
+      // Always show a safe, always-available background immediately —
+      // no flash of transparency while the real photo is checked/loaded.
+      var bgEl = document.getElementById('sport-detail-bg');
+      bgEl.src = 'hero.jpg';
+      if (s.bg) {
+        var test = new Image();
+        test.onload = function () { bgEl.src = s.bg; };
+        // onerror intentionally does nothing — hero.jpg stays as the fallback
+        test.src = s.bg;
+      }
+
       document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
       document.getElementById('legal-sport-detail').classList.add('visible');
       setActivePage('legal-sport-detail:' + key);
