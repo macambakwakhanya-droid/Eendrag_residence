@@ -138,7 +138,10 @@
     }
 
     .topbar-side.right {
-      justify-content: flex-end
+      justify-content: flex-end;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px
     }
 
     .topbar-side a {
@@ -495,6 +498,185 @@
         padding: 6px 18px 60px
       }
     }
+
+    /* ─── calendar page — same transparent-over-hero treatment, sized larger, day grid + event detail side by side ─── */
+    .cal-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 24px 80px;
+      display: flex;
+      justify-content: center
+    }
+
+    .cal-inner {
+      width: min(1040px, 96vw);
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      color: var(--bone)
+    }
+
+    .cal-body {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+      flex-wrap: wrap
+    }
+
+    .cal-left {
+      flex: 1 1 480px;
+      min-width: 320px
+    }
+
+    .cal-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px
+    }
+
+    .cal-nav-btn {
+      background: none;
+      border: 1px solid rgba(232, 230, 222, .35);
+      color: var(--bone);
+      font-family: var(--label);
+      font-size: 16px;
+      padding: 6px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: border-color .2s, color .2s
+    }
+
+    .cal-nav-btn:hover {
+      border-color: var(--brass);
+      color: var(--brass)
+    }
+
+    .cal-month-label {
+      font-family: var(--display);
+      font-size: 22px;
+      letter-spacing: 3px
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px
+    }
+
+    .cal-dow {
+      text-align: center;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--slate);
+      padding: 6px 0;
+      text-transform: uppercase
+    }
+
+    .cal-cell {
+      height: 68px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      letter-spacing: 1px;
+      color: var(--bone);
+      border-radius: 5px;
+      cursor: default;
+      transition: background .2s, border-color .2s
+    }
+
+    .cal-cell.other {
+      color: rgba(232, 230, 222, .3)
+    }
+
+    .cal-cell.today {
+      border: 1px solid rgba(232, 230, 222, .55)
+    }
+
+    .cal-cell.has-event {
+      background: rgba(201, 162, 39, .16);
+      cursor: pointer
+    }
+
+    .cal-cell.has-event:hover {
+      background: rgba(201, 162, 39, .3)
+    }
+
+    .cal-cell.selected {
+      background: rgba(201, 162, 39, .42);
+      border: 1px solid var(--brass)
+    }
+
+    .cal-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--brass);
+      margin-top: 3px
+    }
+
+    .cal-right {
+      flex: 1 1 300px;
+      min-width: 260px
+    }
+
+    .cal-right-label {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--brass);
+      margin-bottom: 20px
+    }
+
+    .cal-event-card {
+      border-bottom: 1px solid rgba(232, 230, 222, .2);
+      padding: 18px 0
+    }
+
+    .cal-event-card:first-child {
+      padding-top: 0
+    }
+
+    .cal-event-title {
+      font-family: var(--display);
+      font-size: 19px;
+      letter-spacing: .5px;
+      margin-bottom: 8px
+    }
+
+    .cal-event-meta {
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      color: var(--slate);
+      margin-bottom: 10px
+    }
+
+    .cal-event-desc {
+      font-size: 14.5px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--bone)
+    }
+
+    .cal-empty {
+      font-size: 14px;
+      letter-spacing: 1.5px;
+      color: var(--slate);
+      line-height: 1.9
+    }
+
+    @media (max-width:760px) {
+      .cal-body {
+        flex-direction: column
+      }
+
+      .cal-cell {
+        height: 52px;
+        font-size: 15px
+      }
+    }
   </style>
 </head>
 
@@ -506,7 +688,7 @@
     <div class="topbar">
       <div class="topbar-side left"></div>
       <div class="brand">EENDRAG <span class="sub">Stellenbosch University</span></div>
-      <div class="topbar-side right"><a href="#contact">CONTACT</a></div>
+      <div class="topbar-side right"><a href="#contact">CONTACT</a><a href="#" onclick="openCalendar(); return false">CALENDAR</a></div>
     </div>
 
     <div class="side-label left">EST. 1961</div>
@@ -624,12 +806,150 @@
     </div>
   </div>
 
+  <!-- ══════════════ CALENDAR ══════════════ -->
+  <div class="legal-page" id="legal-calendar">
+    <div class="legal-bg"><img src="hero.jpg" alt="" /></div>
+    <div class="legal-scrim"></div>
+    <div class="legal-topbar">
+      <button class="legal-back" onclick="closeLegal()">← Back</button>
+      <div class="legal-brand">EEN<span>D</span>RAG</div>
+    </div>
+    <div class="cal-scroll">
+      <div class="cal-inner">
+        <div>
+          <div class="legal-title">House Calendar</div>
+          <div class="legal-updated">Everything happening inside Eendrag, in one place</div>
+        </div>
+
+        <div class="cal-body">
+          <div class="cal-left">
+            <div class="cal-nav">
+              <button class="cal-nav-btn" onclick="calChangeMonth(-1)">←</button>
+              <div class="cal-month-label" id="cal-month-label"></div>
+              <button class="cal-nav-btn" onclick="calChangeMonth(1)">→</button>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+          </div>
+          <div class="cal-right">
+            <div class="cal-right-label" id="cal-right-label">Upcoming events</div>
+            <div id="cal-events-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     function openLegal(which) {
       document.getElementById('legal-' + which).classList.add('visible');
     }
     function closeLegal() {
       document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
+    }
+
+    // ─── CALENDAR ─── edit EVENTS directly to add/change/remove house events. date is 'YYYY-MM-DD'.
+    var CAL_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var EVENTS = [
+      { title: 'Huiskomitee Meeting', date: '2026-09-18', time: '19:00', location: 'Common Room', desc: 'Monthly house committee meeting — open to all residents. Agenda includes upcoming events and house maintenance updates.' },
+      { title: 'Eendrag vs. Wilgenhof', date: '2026-09-26', time: '15:00', location: 'Coetzenburg', desc: 'Interres rugby fixture. Come support the house — jerseys on for the whole first year.' },
+      { title: 'Formal House Dinner', date: '2026-10-03', time: '18:30', location: 'Dining Hall', desc: 'Our annual formal dinner, black tie, with alumni in attendance. Details to follow closer to the date.' }
+    ];
+
+    function calDateStr(y, m, d) { return y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0'); }
+    function calFmtDate(ds) { var p = ds.split('-'); return Number(p[2]) + ' ' + CAL_MONTHS[Number(p[1]) - 1] + ' ' + p[0]; }
+    function calFmtTime(t) { if (!t) return ''; var p = t.split(':'); var hr = Number(p[0]); return (hr % 12 || 12) + ':' + (p[1] || '00') + (hr < 12 ? 'am' : 'pm'); }
+
+    var calYear = new Date().getFullYear();
+    var calMonth = new Date().getMonth();
+    var calSelectedDate = null;
+
+    function openCalendar() {
+      calYear = new Date().getFullYear();
+      calMonth = new Date().getMonth();
+      calSelectedDate = null;
+      calRender();
+      document.getElementById('legal-calendar').classList.add('visible');
+    }
+
+    function calChangeMonth(dir) {
+      calMonth += dir;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      if (calMonth < 0) { calMonth = 11; calYear--; }
+      calSelectedDate = null;
+      calRender();
+    }
+
+    function calRender() {
+      document.getElementById('cal-month-label').textContent = CAL_MONTHS[calMonth] + ' ' + calYear;
+      var grid = document.getElementById('cal-grid');
+      grid.innerHTML = '';
+      ['M', 'T', 'W', 'T', 'F', 'S', 'S'].forEach(function (d) {
+        var h = document.createElement('div');
+        h.className = 'cal-dow';
+        h.textContent = d;
+        grid.appendChild(h);
+      });
+
+      var firstDay = new Date(calYear, calMonth, 1);
+      var startDow = firstDay.getDay(); startDow = startDow === 0 ? 6 : startDow - 1;
+      var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      var today = new Date();
+      var todayStr = calDateStr(today.getFullYear(), today.getMonth(), today.getDate());
+
+      function makeCell(d, ds, other) {
+        var div = document.createElement('div');
+        var hasEvent = EVENTS.some(function (e) { return e.date === ds; });
+        var cls = 'cal-cell' + (other ? ' other' : '') + (ds === todayStr ? ' today' : '') + (hasEvent ? ' has-event' : '') + (ds === calSelectedDate ? ' selected' : '');
+        div.className = cls;
+        div.innerHTML = '<span>' + d + '</span>' + (hasEvent ? '<div class="cal-dot"></div>' : '');
+        if (hasEvent) div.onclick = function () { calSelectedDate = ds; calRender(); };
+        return div;
+      }
+
+      for (var i = 0; i < startDow; i++) {
+        var pd = new Date(calYear, calMonth, 1 - startDow + i);
+        grid.appendChild(makeCell(pd.getDate(), calDateStr(pd.getFullYear(), pd.getMonth(), pd.getDate()), true));
+      }
+      for (var d = 1; d <= daysInMonth; d++) {
+        grid.appendChild(makeCell(d, calDateStr(calYear, calMonth, d), false));
+      }
+      var remaining = (7 - (startDow + daysInMonth) % 7) % 7;
+      for (var j = 1; j <= remaining; j++) {
+        var nd = new Date(calYear, calMonth + 1, j);
+        grid.appendChild(makeCell(j, calDateStr(nd.getFullYear(), nd.getMonth(), j), true));
+      }
+
+      calRenderEventList();
+    }
+
+    function calRenderEventList() {
+      var label = document.getElementById('cal-right-label');
+      var list = document.getElementById('cal-events-list');
+
+      if (calSelectedDate) {
+        var dayEvents = EVENTS.filter(function (e) { return e.date === calSelectedDate; });
+        label.textContent = calFmtDate(calSelectedDate);
+        list.innerHTML = dayEvents.map(function (e) {
+          return '<div class="cal-event-card"><div class="cal-event-title">' + e.title + '</div>' +
+            '<div class="cal-event-meta">' + (e.time ? calFmtTime(e.time) : '') + (e.location ? ' · ' + e.location : '') + '</div>' +
+            '<div class="cal-event-desc">' + (e.desc || '') + '</div></div>';
+        }).join('');
+        return;
+      }
+
+      label.textContent = 'Upcoming events';
+      var today = new Date();
+      var todayStr = calDateStr(today.getFullYear(), today.getMonth(), today.getDate());
+      var upcoming = EVENTS.filter(function (e) { return e.date >= todayStr; }).sort(function (a, b) { return a.date.localeCompare(b.date); });
+      if (!upcoming.length) {
+        list.innerHTML = '<div class="cal-empty">no events scheduled right now — check back soon.</div>';
+        return;
+      }
+      list.innerHTML = upcoming.map(function (e) {
+        return '<div class="cal-event-card"><div class="cal-event-title">' + e.title + '</div>' +
+          '<div class="cal-event-meta">' + calFmtDate(e.date) + (e.time ? ' · ' + calFmtTime(e.time) : '') + (e.location ? ' · ' + e.location : '') + '</div>' +
+          '<div class="cal-event-desc">' + (e.desc || '') + '</div></div>';
+      }).join('');
     }
   </script>
 </body>
