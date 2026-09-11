@@ -684,6 +684,47 @@
       border-color: var(--brass)
     }
 
+    .admin-field select {
+      background: rgba(232, 230, 222, .06);
+      border: 1px solid rgba(232, 230, 222, .22);
+      border-radius: 3px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-family: var(--label);
+      color: var(--bone);
+      outline: none;
+      transition: border-color .2s
+    }
+
+    .admin-field select:focus {
+      border-color: var(--brass)
+    }
+
+    .admin-field select option {
+      background: var(--ink);
+      color: var(--bone)
+    }
+
+    .sport-join-btn {
+      align-self: flex-start;
+      margin-top: 4px;
+      padding: 11px 22px;
+      background: none;
+      color: var(--brass);
+      border: 1px solid rgba(201, 162, 39, .55);
+      border-radius: 3px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-family: var(--label);
+      cursor: pointer;
+      transition: border-color .2s, background .2s
+    }
+    .sport-join-btn:hover {
+      border-color: var(--brass);
+      background: rgba(201, 162, 39, .08)
+    }
+
     .admin-submit {
       margin-top: 6px;
       padding: 13px;
@@ -1550,11 +1591,68 @@
         <div>
           <div class="legal-title" id="sport-detail-title"></div>
           <div class="legal-updated" id="sport-detail-updated"></div>
+          <div class="legal-body" id="sport-detail-body" style="margin-top:18px;"></div>
         </div>
-        <div class="legal-section">
-          <div class="legal-label">Best Eendrag moments</div>
-          <div class="legal-body" id="sport-detail-body"></div>
+        <button class="sport-join-btn" id="sport-join-btn" onclick="openSportJoin()" style="align-self:center;">Join Eendrag Frisbee</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SPORT JOIN APPLICATION (dynamic — filled by openSportJoin()) ══════════════ -->
+  <div class="legal-page" id="legal-sport-join">
+    <div class="legal-bg"><img id="sport-join-bg" src="hero.jpg" alt="" /></div>
+    <div class="legal-scrim"></div>
+    <div class="legal-topbar">
+      <button class="legal-back" onclick="closeSportJoin()">← Back</button>
+      <div class="legal-brand">EEN<span>D</span>RAG</div>
+    </div>
+    <div class="legal-scroll">
+      <div class="legal-inner">
+        <div>
+          <div class="legal-title" id="sport-join-title"></div>
+          <div class="legal-updated">Tell us a bit about yourself and we'll be in touch</div>
         </div>
+        <form class="admin-form" style="max-width:380px;" onsubmit="return false">
+          <div class="admin-field">
+            <label for="join-fname">Name</label>
+            <input id="join-fname" type="text" autocomplete="off" placeholder="First name" />
+          </div>
+          <div class="admin-field">
+            <label for="join-lname">Surname</label>
+            <input id="join-lname" type="text" autocomplete="off" placeholder="Surname" />
+          </div>
+          <div class="admin-field">
+            <label for="join-student-number">Student number</label>
+            <input id="join-student-number" type="text" autocomplete="off" placeholder="e.g. 25000000" />
+          </div>
+          <div class="admin-field">
+            <label for="join-experience">Ever played before?</label>
+            <select id="join-experience">
+              <option value="">Select an option</option>
+              <option value="yes">Yes, I've played before</option>
+              <option value="no">No, this would be my first time</option>
+            </select>
+          </div>
+          <div class="admin-field">
+            <label for="join-section">Section</label>
+            <select id="join-section">
+              <option value="">Select your section</option>
+              <option value="1">Section 1</option>
+              <option value="2">Section 2</option>
+              <option value="3">Section 3</option>
+              <option value="4">Section 4</option>
+              <option value="5">Section 5</option>
+              <option value="6">Section 6</option>
+              <option value="7">Section 7</option>
+              <option value="8">Section 8</option>
+              <option value="9">Section 9</option>
+              <option value="10">Section 10</option>
+              <option value="11">Section 11</option>
+              <option value="12">Section 12</option>
+            </select>
+          </div>
+          <button class="admin-submit" type="submit" disabled>Submit application</button>
+        </form>
       </div>
     </div>
   </div>
@@ -1665,18 +1763,18 @@
     // ─── SPORTS — edit SPORTS_DATA directly to update each sport's write-up.
     // bg is the sport's own background photo filename; falls back to hero.jpg if not set yet.
     var SPORTS_DATA = {
-      soccer: { title: 'Soccer', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best soccer moments will be added here once the season is underway.', bg: 'sport-soccer.JPG' },
-      rugby: { title: 'Rugby', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best rugby moments will be added here once the season is underway.', bg: 'sport-rugby.jpg' },
-      hockey: { title: 'Hockey', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best hockey moments will be added here once the season is underway.', bg: 'sport-hockey.JPG' },
-      basketball: { title: 'Basketball', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best basketball moments will be added here once the season is underway.', bg: 'sport-basketball.JPG' },
-      volleyball: { title: 'Volleyball', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best volleyball moments will be added here once the season is underway.', bg: 'sport-volleyball.jpg' },
-      running: { title: 'Running', updated: 'Road &amp; res races', body: 'Placeholder — Eendrag\'s best running moments will be added here once the season is underway.', bg: 'sport-running.jpg' },
-      frisbee: { title: 'Frisbee', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best frisbee moments will be added here once the season is underway.', bg: 'sport-frisbee.JPG' },
-      chess: { title: 'Chess', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best chess moments will be added here once the season is underway.', bg: 'sport-chess.JPG' },
-      'table-tennis': { title: 'Table Tennis', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best table tennis moments will be added here once the season is underway.', bg: 'sport-tennis-table.JPG' },
-      tennis: { title: 'Tennis', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best tennis moments will be added here once the season is underway.', bg: 'sport-tennis.png' },
-      'speed-eating': { title: 'Speed Eating', updated: 'House &amp; interres events', body: 'Placeholder — Eendrag\'s best speed eating moments will be added here once the season is underway.', bg: 'sport-speed-eating.jpeg' },
-      beerpong: { title: 'Beer Pong', updated: 'House &amp; interres events', body: 'Placeholder — Eendrag\'s best beer pong moments will be added here once the season is underway.', bg: 'sport-beerpong.JPG' }
+      soccer: { title: 'Soccer', updated: 'Interres league &amp; friendlies', body: 'Eendrag fields a soccer side that competes in the interres league each year, with regular friendlies against other houses. Training and match details are shared closer to the season.', bg: 'sport-soccer.JPG' },
+      rugby: { title: 'Rugby', updated: 'Interres league &amp; friendlies', body: 'Rugby is one of Eendrag\'s biggest sporting traditions, with the house turning out in force to support every interres fixture. Trials and training times are posted ahead of the season.', bg: 'sport-rugby.jpg' },
+      hockey: { title: 'Hockey', updated: 'Interres league &amp; friendlies', body: 'Eendrag\'s hockey side plays in the interres league throughout the year, with residents of all experience levels welcome to get involved.', bg: 'sport-hockey.JPG' },
+      basketball: { title: 'Basketball', updated: 'Interres league &amp; friendlies', body: 'Eendrag competes in interres basketball with regular practices and friendlies — a good way to stay active and meet residents from other sections.', bg: 'sport-basketball.JPG' },
+      volleyball: { title: 'Volleyball', updated: 'Interres league &amp; friendlies', body: 'Volleyball at Eendrag runs through the interres league, with casual games on the courts a regular fixture of house life too.', bg: 'sport-volleyball.jpg' },
+      running: { title: 'Running', updated: 'Road &amp; res races', body: 'From road races to res relays, running has a steady following at Eendrag — open to anyone looking to get moving, competitively or not.', bg: 'sport-running.jpg' },
+      frisbee: { title: 'Frisbee', updated: 'Interres league &amp; friendlies', body: 'Ultimate frisbee has grown into one of Eendrag\'s more social sports — relaxed, easy to pick up, and open to first-timers and regulars alike.', bg: 'sport-frisbee.JPG' },
+      chess: { title: 'Chess', updated: 'Interres league &amp; friendlies', body: 'Eendrag\'s chess players compete in interres fixtures throughout the year — a quieter but no less competitive corner of house sport.', bg: 'sport-chess.JPG' },
+      'table-tennis': { title: 'Table Tennis', updated: 'Interres league &amp; friendlies', body: 'Table tennis is a house favourite, played casually and competitively alike, with an interres side representing Eendrag each year.', bg: 'sport-tennis-table.JPG' },
+      tennis: { title: 'Tennis', updated: 'Interres league &amp; friendlies', body: 'Eendrag\'s tennis players take part in interres fixtures, with residents of any skill level welcome to join in.', bg: 'sport-tennis.png' },
+      'speed-eating': { title: 'Speed Eating', updated: 'House &amp; interres events', body: 'A lighthearted but fiercely contested house tradition — speed eating events bring out some of Eendrag\'s biggest characters, usually to a packed common room.', bg: 'sport-speed-eating.jpeg' },
+      beerpong: { title: 'Beer Pong', updated: 'House &amp; interres events', body: 'A staple of Eendrag social life, beer pong tournaments are a regular fixture at house events throughout the year.', bg: 'sport-beerpong.JPG' }
     };
     // preload every sport background in the background, so clicking a sport card
     // swaps to an already-cached image instead of waiting on a fresh network fetch
@@ -1686,12 +1784,15 @@
         if (bg) { var img = new Image(); img.src = bg; }
       });
     })();
+    var currentSportKey = null;
     function openSportDetail(key) {
       var s = SPORTS_DATA[key];
       if (!s) return;
+      currentSportKey = key;
       document.getElementById('sport-detail-title').textContent = s.title;
       document.getElementById('sport-detail-updated').innerHTML = s.updated;
       document.getElementById('sport-detail-body').innerHTML = s.body;
+      document.getElementById('sport-join-btn').textContent = 'Join Eendrag ' + s.title;
 
       // Always show a safe, always-available background immediately —
       // no flash of transparency while the real photo is checked/loaded.
@@ -1710,12 +1811,35 @@
       hideHamburger();
     }
 
+    // ─── SPORT JOIN APPLICATION — reuses the current sport's title & background.
+    // Submitting is intentionally disabled for now (see the "Submit application"
+    // button) until this is wired up to an actual backend.
+    function openSportJoin() {
+      if (!currentSportKey) return;
+      var s = SPORTS_DATA[currentSportKey];
+      document.getElementById('sport-join-title').textContent = 'Join Eendrag ' + s.title;
+      document.getElementById('join-fname').value = '';
+      document.getElementById('join-lname').value = '';
+      document.getElementById('join-student-number').value = '';
+      document.getElementById('join-experience').value = '';
+      document.getElementById('join-section').value = '';
+      var bgEl = document.getElementById('sport-join-bg');
+      bgEl.src = document.getElementById('sport-detail-bg').src; // match whatever's already shown for this sport
+      document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
+      document.getElementById('legal-sport-join').classList.add('visible');
+      setActivePage('legal-sport-join:' + currentSportKey);
+      hideHamburger();
+    }
+    function closeSportJoin() {
+      if (currentSportKey) openSportDetail(currentSportKey);
+      else openLegal('sports');
+    }
+
     // ─── CALENDAR ─── edit EVENTS directly to add/change/remove house events. date is 'YYYY-MM-DD'.
     var CAL_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var EVENTS = [
-      { title: 'Huiskomitee Meeting', date: '2026-09-18', time: '19:00', location: 'Common Room', desc: 'Monthly house committee meeting — open to all residents. Agenda includes upcoming events and house maintenance updates.' },
-      { title: 'Eendrag vs. Wilgenhof', date: '2026-09-26', time: '15:00', location: 'Coetzenburg', desc: 'Interres rugby fixture. Come support the house — jerseys on for the whole first year.' },
-      { title: 'Formal House Dinner', date: '2026-10-03', time: '18:30', location: 'Dining Hall', desc: 'Our annual formal dinner, black tie, with alumni in attendance. Details to follow closer to the date.' }
+      { title: 'Eendrag Reunion', date: '2026-09-11', time: '18:00', location: 'Eendrag', desc: 'Former Eendragters come home again — an evening for old and new residents to reconnect, share stories, and catch up with the house they once called home. Held annually.' },
+      { title: 'Damies Touch', date: '2026-10-10', time: '15:00', location: 'Coetzenburg', desc: 'Eendrag\'s annual touch rugby event with the ladies\' residences — a firm fixture on the house calendar, held every year.' }
     ];
 
     function calDateStr(y, m, d) { return y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0'); }
@@ -1828,6 +1952,9 @@
         openStats();
       } else if (saved === 'legal-photos') {
         openPhotos();
+      } else if (saved.indexOf('legal-sport-join:') === 0) {
+        openSportDetail(saved.slice('legal-sport-join:'.length));
+        openSportJoin();
       } else if (saved.indexOf('legal-sport-detail:') === 0) {
         openSportDetail(saved.slice('legal-sport-detail:'.length));
       } else if (saved.indexOf('legal-') === 0) {
