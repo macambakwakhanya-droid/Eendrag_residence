@@ -206,15 +206,6 @@
       gap: 30px
     }
 
-    .crest-mark {
-      font-family: var(--label);
-      font-size: 11px;
-      letter-spacing: 6px;
-      color: var(--slate);
-      opacity: 0;
-      animation: fadeIn 1s ease .35s forwards
-    }
-
     .thesis {
       font-family: var(--display);
       font-weight: 400;
@@ -243,14 +234,59 @@
       animation: fadeIn 1s ease .8s forwards
     }
 
-    .house-desc {
-      font-size: 13.5px;
-      line-height: 1.75;
-      color: #c7c4ba;
-      max-width: 460px;
-      margin-top: 6px;
+    .motto-triangle {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-top: 4px;
       opacity: 0;
-      animation: fadeIn 1s ease .95s forwards
+      animation: fadeIn 1s ease .9s forwards
+    }
+
+    .motto-apex {
+      font-family: var(--display);
+      font-style: italic;
+      font-size: 15px;
+      letter-spacing: 1px;
+      color: var(--brass)
+    }
+
+    .motto-base {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 560px;
+      gap: 48px
+    }
+
+    .motto-base span {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--slate);
+      white-space: nowrap
+    }
+
+    .motto-base .left {
+      text-align: left
+    }
+
+    .motto-base .right {
+      text-align: right
+    }
+
+    @media (max-width:640px) {
+      .motto-base {
+        flex-direction: column;
+        gap: 10px;
+        max-width: 280px
+      }
+
+      .motto-base .left,
+      .motto-base .right {
+        text-align: center
+      }
     }
 
     .bottombar {
@@ -317,15 +353,21 @@
     </div>
 
     <div class="side-label left">EST. 1961</div>
-    <div class="side-label right">ADVH</div>
+    <div class="side-label right">AVDH</div>
 
     <div class="hero-center">
-      
+
       <div class="thesis">Eendrag Male Residence.</div>
       <div class="thesis-rule"></div>
       <div class="thesis-attrib">Alles Vir Die Huis</div>
-      <p class="house-desc">Isimbo &middot; Isimilo &middot; Ibhongo</p>
-      <p class="house-desc">Character &middot; Style &middot; Pride </p>
+      <div class="motto-triangle">
+        <span class="left">Character &middot; Style &middot; Pride</span>
+        <span class="right">Isimbo &middot; Isimilo &middot; Ibhongo</span>
+        
+        <div class="motto-base">
+          <div class="motto-apex">Karakter &middot; Styl &middot; Trots</div>
+        </div>
+      </div>
     </div>
 
     <div class="bottombar" id="contact">
