@@ -590,6 +590,35 @@
     @media (prefers-reduced-motion: reduce) { .float-card-inner { animation: none !important } }
     @media (max-width: 640px) { .float-grid { grid-template-columns: 1fr; max-width: 320px } }
 
+    /* ─── HEADLINES ─── */
+    .headline-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 22px 0;
+      border-bottom: 1px solid rgba(232, 230, 222, .12)
+    }
+    .headline-item:last-child { border-bottom: none }
+    .headline-date {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--brass)
+    }
+    .headline-title {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--bone);
+      letter-spacing: .3px
+    }
+    .headline-body {
+      font-size: 14.5px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--bone);
+      opacity: .9
+    }
+
     .admin-gate {
       display: flex;
       flex-direction: column;
@@ -1124,6 +1153,7 @@
       <a class="menu-item" onclick="return false">House Leaders</a>
       <a class="menu-item" onclick="return false">History</a>
       <a class="menu-item" onclick="closeMenu(); openLegal('sports');">Sports</a>
+      <a class="menu-item" onclick="closeMenu(); openLegal('headlines');">Eendrag Headlines</a>
       <a class="menu-item" onclick="closeMenu(); openLegal('admin');">Admin</a>
     </div>
   </div>
@@ -1455,6 +1485,25 @@
     </div>
   </div>
 
+  <!-- ══════════════ HEADLINES ══════════════ -->
+  <div class="legal-page" id="legal-headlines">
+    <div class="legal-bg"><img src="hero.jpg" alt="" /></div>
+    <div class="legal-scrim"></div>
+    <div class="legal-topbar">
+      <button class="legal-back" onclick="closeLegal()">← Back</button>
+      <div class="legal-brand">EEN<span>D</span>RAG</div>
+    </div>
+    <div class="legal-scroll">
+      <div class="legal-inner">
+        <div>
+          <div class="legal-title">Eendrag Headlines</div>
+          <div class="legal-updated">What's happening around the house</div>
+        </div>
+        <div id="headlines-list"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- ══════════════ SPORTS ══════════════ -->
   <div class="legal-page" id="legal-sports">
     <div class="legal-bg"><img src="hero.jpg" alt="" /></div>
@@ -1477,6 +1526,9 @@
           <div class="float-card" onclick="openSportDetail('volleyball')"><span class="float-card-inner"><span class="float-card-index">05</span><span class="float-card-title">Volleyball</span></span></div>
           <div class="float-card" onclick="openSportDetail('running')"><span class="float-card-inner"><span class="float-card-index">06</span><span class="float-card-title">Running</span></span></div>
           <div class="float-card" onclick="openSportDetail('frisbee')"><span class="float-card-inner"><span class="float-card-index">07</span><span class="float-card-title">Frisbee</span></span></div>
+          <div class="float-card" onclick="openSportDetail('chess')"><span class="float-card-inner"><span class="float-card-index">08</span><span class="float-card-title">Chess</span></span></div>
+          <div class="float-card" onclick="openSportDetail('table-tennis')"><span class="float-card-inner"><span class="float-card-index">09</span><span class="float-card-title">Table Tennis</span></span></div>
+          <div class="float-card" onclick="openSportDetail('speed-eating')"><span class="float-card-inner"><span class="float-card-index">10</span><span class="float-card-title">Speed Eating</span></span></div>
         </div>
       </div>
     </div>
@@ -1484,7 +1536,7 @@
 
   <!-- ══════════════ SPORT DETAIL (dynamic — filled by openSportDetail()) ══════════════ -->
   <div class="legal-page" id="legal-sport-detail">
-    <div class="legal-bg"><img src="hero.jpg" alt="" /></div>
+    <div class="legal-bg"><img id="sport-detail-bg" src="hero.jpg" alt="" onerror="this.onerror=null;this.src='hero.jpg';" /></div>
     <div class="legal-scrim"></div>
     <div class="legal-topbar">
       <button class="legal-back" onclick="openLegal('sports')">← Back</button>
@@ -1578,11 +1630,28 @@
       else sessionStorage.removeItem(EENDRAG_PAGE_KEY);
     }
 
+    // ─── HEADLINES — edit this list directly to add or remove headlines. Newest first.
+    var HEADLINES = [
+      { date: 'Placeholder', title: 'Headlines are coming soon', body: 'lm should commence on February 2027 — this is a placeholder. Real Eendrag headlines and house news will be posted here once the site goes live.' }
+    ];
+    function renderHeadlines() {
+      var wrap = document.getElementById('headlines-list');
+      if (!wrap) return;
+      wrap.innerHTML = HEADLINES.map(function (h) {
+        return '<div class="headline-item">' +
+          '<div class="headline-date">' + h.date + '</div>' +
+          '<div class="headline-title">' + h.title + '</div>' +
+          '<div class="headline-body">' + h.body + '</div>' +
+        '</div>';
+      }).join('');
+    }
+
     function openLegal(which) {
       document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
       document.getElementById('legal-' + which).classList.add('visible');
       setActivePage('legal-' + which);
       hideHamburger();
+      if (which === 'headlines') renderHeadlines();
     }
     function closeLegal() {
       document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
@@ -1591,14 +1660,18 @@
     }
 
     // ─── SPORTS — edit SPORTS_DATA directly to update each sport's write-up.
+    // bg is the sport's own background photo filename; falls back to hero.jpg if not set yet.
     var SPORTS_DATA = {
-      soccer: { title: 'Soccer', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best soccer moments will be added here once the season is underway.' },
-      rugby: { title: 'Rugby', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best rugby moments will be added here once the season is underway.' },
-      hockey: { title: 'Hockey', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best hockey moments will be added here once the season is underway.' },
-      basketball: { title: 'Basketball', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best basketball moments will be added here once the season is underway.' },
-      volleyball: { title: 'Volleyball', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best volleyball moments will be added here once the season is underway.' },
-      running: { title: 'Running', updated: 'Road &amp; res races', body: 'Placeholder — Eendrag\'s best running moments will be added here once the season is underway.' },
-      frisbee: { title: 'Frisbee', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best frisbee moments will be added here once the season is underway.' }
+      soccer: { title: 'Soccer', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best soccer moments will be added here once the season is underway.', bg: 'sport-soccer.jpg' },
+      rugby: { title: 'Rugby', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best rugby moments will be added here once the season is underway.', bg: 'sport-rugby.jpg' },
+      hockey: { title: 'Hockey', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best hockey moments will be added here once the season is underway.', bg: 'sport-hockey.jpg' },
+      basketball: { title: 'Basketball', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best basketball moments will be added here once the season is underway.', bg: 'sport-basketball.jpg' },
+      volleyball: { title: 'Volleyball', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best volleyball moments will be added here once the season is underway.', bg: 'sport-volleyball.jpg' },
+      running: { title: 'Running', updated: 'Road &amp; res races', body: 'Placeholder — Eendrag\'s best running moments will be added here once the season is underway.', bg: 'sport-running.jpg' },
+      frisbee: { title: 'Frisbee', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best frisbee moments will be added here once the season is underway.', bg: 'sport-frisbee.jpg' },
+      chess: { title: 'Chess', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best chess moments will be added here once the season is underway.', bg: 'sport-chess.jpg' },
+      'table-tennis': { title: 'Table Tennis', updated: 'Interres league &amp; friendlies', body: 'Placeholder — Eendrag\'s best table tennis moments will be added here once the season is underway.', bg: 'sport-table-tennis.jpg' },
+      'speed-eating': { title: 'Speed Eating', updated: 'House &amp; interres events', body: 'Placeholder — Eendrag\'s best speed eating moments will be added here once the season is underway.', bg: 'sport-speed-eating.jpg' }
     };
     function openSportDetail(key) {
       var s = SPORTS_DATA[key];
@@ -1606,6 +1679,7 @@
       document.getElementById('sport-detail-title').textContent = s.title;
       document.getElementById('sport-detail-updated').innerHTML = s.updated;
       document.getElementById('sport-detail-body').innerHTML = s.body;
+      document.getElementById('sport-detail-bg').src = s.bg || 'hero.jpg';
       document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
       document.getElementById('legal-sport-detail').classList.add('visible');
       setActivePage('legal-sport-detail:' + key);
