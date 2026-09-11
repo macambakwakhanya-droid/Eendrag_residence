@@ -677,10 +677,219 @@
         font-size: 15px
       }
     }
+
+    /* ─── hamburger menu ─── */
+    .hamburger-btn {
+      position: fixed;
+      top: 34px;
+      left: 44px;
+      z-index: 200;
+      width: 30px;
+      height: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      opacity: 0;
+      animation: fadeInSoft 1s ease .1s forwards
+    }
+
+    .hamburger-btn span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--bone);
+      border-radius: 1px;
+      transition: transform .3s ease, opacity .3s ease
+    }
+
+    .hamburger-btn.open span:nth-child(1) {
+      transform: translateY(10px) rotate(45deg)
+    }
+
+    .hamburger-btn.open span:nth-child(2) {
+      opacity: 0
+    }
+
+    .hamburger-btn.open span:nth-child(3) {
+      transform: translateY(-10px) rotate(-45deg)
+    }
+
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      display: none;
+      background: rgba(5, 7, 10, .82);
+      backdrop-filter: blur(3px)
+    }
+
+    .menu-overlay.visible {
+      display: block;
+      animation: fadeInSoft .35s ease forwards
+    }
+
+    .menu-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: min(340px, 82vw);
+      background: var(--ink);
+      border-right: 1px solid rgba(232, 230, 222, .12);
+      z-index: 151;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 48px;
+      transform: translateX(-100%);
+      transition: transform .35s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .menu-overlay.visible .menu-panel {
+      transform: translateX(0)
+    }
+
+    .menu-item {
+      display: block;
+      color: var(--bone);
+      font-family: var(--display);
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      text-decoration: none;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(232, 230, 222, .1);
+      cursor: pointer;
+      transition: color .2s, padding-left .2s
+    }
+
+    .menu-item:hover {
+      color: var(--brass);
+      padding-left: 6px
+    }
+
+    .menu-item:last-of-type {
+      border-bottom: none
+    }
+
+    .menu-label {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--slate);
+      margin-bottom: 18px
+    }
+
+    /* ─── analytics & stats page ─── */
+    .stats-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 24px 80px
+    }
+
+    .stats-inner {
+      max-width: 820px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 34px;
+      color: var(--bone)
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px
+    }
+
+    .stats-box {
+      border: 1px solid rgba(232, 230, 222, .18);
+      background: rgba(232, 230, 222, .03);
+      border-radius: 4px;
+      padding: 24px 22px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .stats-box::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--brass), transparent)
+    }
+
+    .stats-num {
+      font-family: var(--display);
+      font-size: 34px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      color: var(--brass);
+      margin-bottom: 6px
+    }
+
+    .stats-lbl {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--slate)
+    }
+
+    .stats-leadership {
+      display: flex;
+      flex-direction: column;
+      gap: 4px
+    }
+
+    .stats-leadership-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(232, 230, 222, .14)
+    }
+
+    .stats-leadership-row:last-child {
+      border-bottom: none
+    }
+
+    .stats-role {
+      font-size: 15px;
+      letter-spacing: .5px;
+      color: var(--bone)
+    }
+
+    .stats-role-note {
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: var(--slate)
+    }
   </style>
 </head>
 
 <body>
+  <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="menu-overlay" id="menu-overlay" onclick="if(event.target===this) closeMenu()">
+    <div class="menu-panel">
+      <div class="menu-label">Eendrag</div>
+      <a class="menu-item" onclick="closeMenu(); openCalendar();">Events</a>
+      <a class="menu-item" onclick="closeMenu(); openStats();">Analytics &amp; Stats</a>
+      <a class="menu-item" onclick="return false">House Leaders</a>
+      <a class="menu-item" onclick="return false">History</a>
+      <a class="menu-item" onclick="return false">Sports</a>
+    </div>
+  </div>
+
   <div class="hero">
     <div class="hero-bg"><img src="hero.jpg" alt="" loading="eager" /></div>
     <div class="hero-scrim"></div>
@@ -839,7 +1048,67 @@
     </div>
   </div>
 
+  <!-- ══════════════ ANALYTICS & STATS ══════════════ -->
+  <div class="legal-page" id="legal-stats">
+    <div class="legal-bg"><img src="hero.jpg" alt="" /></div>
+    <div class="legal-scrim"></div>
+    <div class="legal-topbar">
+      <button class="legal-back" onclick="closeLegal()">← Back</button>
+      <div class="legal-brand">EEN<span>D</span>RAG</div>
+    </div>
+    <div class="stats-scroll">
+      <div class="stats-inner">
+        <div>
+          <div class="legal-title">Analytics &amp; Stats</div>
+          <div class="legal-updated">Eendrag, by the numbers</div>
+        </div>
+
+        <div class="legal-section">
+          <div class="legal-label">House at a glance</div>
+          <div class="stats-grid">
+            <div class="stats-box"><div class="stats-num">1961</div><div class="stats-lbl">Founded</div></div>
+            <div class="stats-box"><div class="stats-num">180</div><div class="stats-lbl">Residents</div></div>
+            <div class="stats-box"><div class="stats-num">65</div><div class="stats-lbl">Years of tradition</div></div>
+            <div class="stats-box"><div class="stats-num">12</div><div class="stats-lbl">House events / year</div></div>
+          </div>
+        </div>
+
+        <div class="legal-section">
+          <div class="legal-label">House Leaders</div>
+          <div class="legal-body">Eendrag is run by a small, dedicated leadership structure — the Primarius, House Manager, Mentors, and House Committee — together known as the Leierskorps.</div>
+          <div class="stats-leadership">
+            <div class="stats-leadership-row"><span class="stats-role">Primarius</span><span class="stats-role-note">Head of house</span></div>
+            <div class="stats-leadership-row"><span class="stats-role">House Manager</span><span class="stats-role-note">Day-to-day operations</span></div>
+            <div class="stats-leadership-row"><span class="stats-role">Mentors</span><span class="stats-role-note">First-year support</span></div>
+            <div class="stats-leadership-row"><span class="stats-role">House Committee</span><span class="stats-role-note">Events & house life</span></div>
+          </div>
+        </div>
+
+        <div class="legal-section">
+          <div class="legal-label">A note on this page</div>
+          <div class="legal-body">These figures are placeholders for now — real numbers will be added as they're finalised. This page is a good place to eventually track things like sports results, participation, and year-on-year house growth.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
+    function toggleMenu() {
+      var btn = document.getElementById('hamburger-btn');
+      var overlay = document.getElementById('menu-overlay');
+      var isOpen = overlay.classList.contains('visible');
+      if (isOpen) { closeMenu(); } else { btn.classList.add('open'); overlay.classList.add('visible'); }
+    }
+    function closeMenu() {
+      document.getElementById('hamburger-btn').classList.remove('open');
+      document.getElementById('menu-overlay').classList.remove('visible');
+    }
+    function openStats() {
+      document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
+      document.getElementById('legal-stats').classList.add('visible');
+      setActivePage('legal-stats');
+    }
+
     // ─── page persistence — whichever overlay (Terms / Privacy / Calendar /
     // any future page) is open gets remembered, so refreshing lands back on
     // the same view instead of resetting to the hero. sessionStorage so it
@@ -973,6 +1242,8 @@
       if (!saved) return; // nothing saved — stay on the hero, as normal
       if (saved === 'legal-calendar') {
         openCalendar();
+      } else if (saved === 'legal-stats') {
+        openStats();
       } else if (saved.indexOf('legal-') === 0) {
         var which = saved.slice('legal-'.length);
         if (document.getElementById('legal-' + which)) openLegal(which);
