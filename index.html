@@ -688,7 +688,7 @@
     <div class="topbar">
       <div class="topbar-side left"></div>
       <div class="brand">EENDRAG <span class="sub">Stellenbosch University</span></div>
-      <div class="topbar-side right"><a href="#contact">CONTACT US</a><a href="#" onclick="openCalendar(); return false">CALENDAR</a></div>
+      <div class="topbar-side right"><a href="#contact">CONTACT</a><a href="#" onclick="openCalendar(); return false">CALENDAR</a></div>
     </div>
 
     <div class="side-label left">EST. 1961</div>
@@ -840,11 +840,24 @@
   </div>
 
   <script>
+    // ─── page persistence — whichever overlay (Terms / Privacy / Calendar /
+    // any future page) is open gets remembered, so refreshing lands back on
+    // the same view instead of resetting to the hero. sessionStorage so it
+    // naturally clears once the tab itself is closed. ───
+    var EENDRAG_PAGE_KEY = 'eendrag_active_page';
+    function setActivePage(id) {
+      if (id) sessionStorage.setItem(EENDRAG_PAGE_KEY, id);
+      else sessionStorage.removeItem(EENDRAG_PAGE_KEY);
+    }
+
     function openLegal(which) {
+      document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
       document.getElementById('legal-' + which).classList.add('visible');
+      setActivePage('legal-' + which);
     }
     function closeLegal() {
       document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
+      setActivePage(null);
     }
 
     // ─── CALENDAR ─── edit EVENTS directly to add/change/remove house events. date is 'YYYY-MM-DD'.
@@ -864,11 +877,13 @@
     var calSelectedDate = null;
 
     function openCalendar() {
+      document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
       calYear = new Date().getFullYear();
       calMonth = new Date().getMonth();
       calSelectedDate = null;
       calRender();
       document.getElementById('legal-calendar').classList.add('visible');
+      setActivePage('legal-calendar');
     }
 
     function calChangeMonth(dir) {
@@ -951,6 +966,18 @@
           '<div class="cal-event-desc">' + (e.desc || '') + '</div></div>';
       }).join('');
     }
+
+    // ─── restore whichever page was open on refresh ───
+    (function () {
+      var saved = sessionStorage.getItem(EENDRAG_PAGE_KEY);
+      if (!saved) return; // nothing saved — stay on the hero, as normal
+      if (saved === 'legal-calendar') {
+        openCalendar();
+      } else if (saved.indexOf('legal-') === 0) {
+        var which = saved.slice('legal-'.length);
+        if (document.getElementById('legal-' + which)) openLegal(which);
+      }
+    })();
   </script>
 </body>
 
