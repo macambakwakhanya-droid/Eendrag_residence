@@ -338,6 +338,164 @@
         gap: 18px
       }
     }
+
+    /* ─── legal pages (Terms / Privacy) — transparent, scrollable over hero.jpg ─── */
+    .legal-page {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      flex-direction: column;
+      background: transparent
+    }
+
+    .legal-page.visible {
+      display: flex;
+      animation: fadeInSoft .5s ease forwards
+    }
+
+    .legal-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1
+    }
+
+    .legal-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block
+    }
+
+    .legal-scrim {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(rgba(5, 7, 10, .62), rgba(5, 7, 10, .82))
+    }
+
+    .legal-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 30px 44px;
+      flex-shrink: 0
+    }
+
+    .legal-back {
+      color: var(--bone);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--label);
+      transition: color .2s
+    }
+
+    .legal-back:hover {
+      color: var(--brass)
+    }
+
+    .legal-brand {
+      font-family: var(--display);
+      letter-spacing: 4px;
+      font-size: 15px;
+      color: var(--bone)
+    }
+
+    .legal-brand span {
+      color: var(--brass)
+    }
+
+    .legal-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 24px 80px
+    }
+
+    .legal-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 34px;
+      color: var(--bone)
+    }
+
+    .legal-title {
+      font-family: var(--display);
+      font-weight: 400;
+      font-size: clamp(26px, 4vw, 38px);
+      letter-spacing: 1px;
+      margin-bottom: 6px
+    }
+
+    .legal-updated {
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      color: var(--slate);
+      margin-top: -22px
+    }
+
+    .legal-section {
+      border-bottom: 1px solid rgba(232, 230, 222, .16);
+      padding-bottom: 30px
+    }
+
+    .legal-section:last-child {
+      border-bottom: none
+    }
+
+    .legal-label {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--brass);
+      margin-bottom: 14px
+    }
+
+    .legal-body {
+      font-size: 15px;
+      font-weight: 300;
+      letter-spacing: .3px;
+      line-height: 2;
+      color: var(--bone);
+      margin-bottom: 12px
+    }
+
+    .legal-body:last-child {
+      margin-bottom: 0
+    }
+
+    .legal-body a {
+      color: var(--brass);
+      text-decoration: underline;
+      cursor: pointer
+    }
+
+    .legal-note {
+      background: rgba(201, 162, 39, .08);
+      border: 1px solid rgba(201, 162, 39, .3);
+      border-radius: 4px;
+      padding: 18px 20px;
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--bone)
+    }
+
+    @media (max-width:640px) {
+      .legal-topbar {
+        padding: 22px 20px
+      }
+
+      .legal-scroll {
+        padding: 6px 18px 60px
+      }
+    }
   </style>
 </head>
 
@@ -373,10 +531,108 @@
       <span>© Eendrag Male Residence</span>
       <div class="bottombar-links">
         <a href="mailto:info@eendrag.co.za">Enquire</a>
+        <a href="#" onclick="openLegal('terms'); return false">Terms</a>
+        <a href="#" onclick="openLegal('privacy'); return false">Privacy</a>
         <a href="#" onclick="return false">Instagram</a>
       </div>
     </div>
   </div>
+
+  <!-- ══════════════ TERMS ══════════════ -->
+  <div class="legal-page" id="legal-terms">
+    <div class="legal-bg"><img src="hero.jpg" alt="" /></div>
+    <div class="legal-scrim"></div>
+    <div class="legal-topbar">
+      <button class="legal-back" onclick="closeLegal()">← Back</button>
+      <div class="legal-brand">EEN<span>D</span>RAG</div>
+    </div>
+    <div class="legal-scroll">
+      <div class="legal-inner">
+        <div>
+          <div class="legal-title">Terms &amp; Conditions</div>
+          <div class="legal-updated">Last updated 2026</div>
+        </div>
+
+        <div class="legal-note">Eendrag is a Stellenbosch University male residence. Residence placement, applications, and admissions are handled entirely by Stellenbosch University's Admissions and Residence Office — this website does not process applications and cannot offer, confirm, or guarantee a room. Please direct all application enquiries to the University directly.</div>
+
+        <div class="legal-section">
+          <div class="legal-label">Using this site</div>
+          <div class="legal-body">This site exists to represent Eendrag's character, traditions, and community to prospective students, alumni, and visitors. Content on it — including house history, values, and events — is provided in good faith and may be updated from time to time as the house committee sees fit.</div>
+          <div class="legal-body">Nothing on this site constitutes an offer of residence, a guarantee of placement, or any binding arrangement between you and Eendrag, Stellenbosch University, or any of its residences.</div>
+        </div>
+
+        <div class="legal-section">
+          <div class="legal-label">Residence applications</div>
+          <div class="legal-body">Eendrag does not accept or process residence applications through this website. All applications for residence placement at Stellenbosch University, including Eendrag, must be submitted through the University's own official Admissions and Residence application channels.</div>
+          <div class="legal-body">For application deadlines, requirements, and status enquiries, please contact Stellenbosch University's Residence Office directly rather than Eendrag's house committee, who are not able to assist with or influence the University's placement process.</div>
+        </div>
+
+        <div class="legal-section">
+          <div class="legal-label">Enquiries</div>
+          <div class="legal-body">Messages sent through the "Enquire" link on this site go directly to the house, and are intended for general questions about Eendrag's traditions, events, or community life — not for residence applications, which must go through the University as described above.</div>
+        </div>
+
+        <div class="legal-section">
+          <div class="legal-label">Intellectual property</div>
+          <div class="legal-body">The Eendrag name, crest, motto, and house imagery presented on this site belong to Eendrag and Stellenbosch University. They may not be reproduced or used to imply affiliation without permission.</div>
+        </div>
+
+        <div class="legal-section">
+          <div class="legal-label">General</div>
+          <div class="legal-body">These terms may be updated at any time without prior notice. For any questions about these terms, or about Eendrag more generally, please reach out through the <a onclick="closeLegal()">enquire</a> link on the homepage.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ PRIVACY ══════════════ -->
+  <div class="legal-page" id="legal-privacy">
+    <div class="legal-bg"><img src="hero.jpg" alt="" /></div>
+    <div class="legal-scrim"></div>
+    <div class="legal-topbar">
+      <button class="legal-back" onclick="closeLegal()">← Back</button>
+      <div class="legal-brand">EEN<span>D</span>RAG</div>
+    </div>
+    <div class="legal-scroll">
+      <div class="legal-inner">
+        <div>
+          <div class="legal-title">Privacy Policy</div>
+          <div class="legal-updated">Last updated 2026</div>
+        </div>
+
+        <div class="legal-note">This is Eendrag's own house website, not a Stellenbosch University admissions system. Any personal information you submit through it — such as via the "Enquire" link — is handled by the house committee, not by the University's Residence Office. If you're applying for residence, please use the University's official channels instead.</div>
+
+        <div class="legal-section">
+          <div class="legal-label">What we collect</div>
+          <div class="legal-body">If you get in touch through the "Enquire" link, whatever you include — your name, email address, and message — is sent directly to the house committee's inbox and used only to respond to you. It is not stored on a server, added to a mailing list, or shared with any third party.</div>
+        </div>
+
+        <div class="legal-section">
+          <div class="legal-label">What we don't collect</div>
+          <div class="legal-body">This site does not collect application forms, academic records, identity documents, or any of the information Stellenbosch University requires for residence placement. That information should only ever be submitted through the University's own official admissions systems, never through this site.</div>
+        </div>
+
+        <div class="legal-section">
+          <div class="legal-label">Cookies &amp; tracking</div>
+          <div class="legal-body">This site does not use cookies, analytics trackers, or any form of visitor tracking beyond what's strictly required to display the page itself.</div>
+        </div>
+
+        <div class="legal-section">
+          <div class="legal-label">Your rights</div>
+          <div class="legal-body">You can request access to, correction of, or deletion of any personal information you've shared with Eendrag through this site at any time by contacting the house directly via the <a onclick="closeLegal()">enquire</a> link.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openLegal(which) {
+      document.getElementById('legal-' + which).classList.add('visible');
+    }
+    function closeLegal() {
+      document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
+    }
+  </script>
 </body>
 
 </html>
