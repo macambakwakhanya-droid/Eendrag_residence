@@ -1776,12 +1776,26 @@
       'speed-eating': { title: 'Speed Eating', updated: 'House &amp; interres events', body: 'A lighthearted but fiercely contested house tradition — speed eating events bring out some of Eendrag\'s biggest characters, usually to a packed common room.', bg: 'sport-speed-eating.jpeg' },
       beerpong: { title: 'Beer Pong', updated: 'House &amp; interres events', body: 'A staple of Eendrag social life, beer pong tournaments are a regular fixture at house events throughout the year.', bg: 'sport-beerpong.JPG' }
     };
-    // preload every sport background in the background, so clicking a sport card
-    // swaps to an already-cached image instead of waiting on a fresh network fetch
+    // preload every sport background, so clicking a sport card can swap to an
+    // already-cached image instead of waiting on a fresh network fetch.
+    // Crucially, we keep a reference to each Image + track whether it has
+    // actually finished loading — a bare `new Image(); img.src = bg` with no
+    // reference kept tells the browser to start the fetch but gives us no way
+    // to know when (or if) it's actually done, so the old code below swapped
+    // bgEl.src as soon as you clicked regardless of preload progress. That
+    // blanks the visible image immediately and leaves it blank until that
+    // specific file finishes downloading — since these are large, unresized
+    // camera photos and up to 12 of them are competing for bandwidth at once,
+    // that gap can run several seconds. This is the "photo shows up late" bug.
+    var sportBgLoaded = {};
     (function preloadSportBackgrounds() {
       Object.keys(SPORTS_DATA).forEach(function (key) {
         var bg = SPORTS_DATA[key].bg;
-        if (bg) { var img = new Image(); img.src = bg; }
+        if (!bg) return;
+        sportBgLoaded[key] = false;
+        var img = new Image();
+        img.onload = function () { sportBgLoaded[key] = true; };
+        img.src = bg;
       });
     })();
     var currentSportKey = null;
@@ -1794,16 +1808,42 @@
       document.getElementById('sport-detail-body').innerHTML = s.body;
       document.getElementById('sport-join-btn').textContent = 'Join Eendrag ' + s.title;
 
-      // Set the real background straight away — it's already preloaded/cached
-      // by preloadSportBackgrounds(), so this shows instantly. Only fall back
-      // to hero.jpg if the image genuinely fails to load.
+      // Only swap the visible background once we know the image is actually
+      // ready. If the preload already finished (sportBgLoaded[key] is true,
+      // or the browser reports the image .complete with real pixel data),
+      // swap immediately — this is the common case and is instant. If it's
+      // NOT ready yet, leave whatever background is currently showing in
+      // place (instead of blanking it) and swap in the real photo the moment
+      // its load event fires, but only if the user is still on this sport.
       var bgEl = document.getElementById('sport-detail-bg');
-      if (s.bg) {
+      if (!s.bg) {
+        bgEl.onerror = null;
+        bgEl.src = 'hero.jpg';
+        return;
+      }
+
+      var probe = new Image();
+      probe.src = s.bg;
+      var alreadyReady = sportBgLoaded[key] || (probe.complete && probe.naturalWidth > 0);
+
+      if (alreadyReady) {
         bgEl.onerror = function () { bgEl.onerror = null; bgEl.src = 'hero.jpg'; };
         bgEl.src = s.bg;
       } else {
-        bgEl.onerror = null;
-        bgEl.src = 'hero.jpg';
+        // Keep current background visible; swap in the real one once ready.
+        probe.onload = function () {
+          sportBgLoaded[key] = true;
+          if (currentSportKey === key) {
+            bgEl.onerror = null;
+            bgEl.src = s.bg;
+          }
+        };
+        probe.onerror = function () {
+          if (currentSportKey === key) {
+            bgEl.onerror = null;
+            bgEl.src = 'hero.jpg';
+          }
+        };
       }
 
       document.querySelectorAll('.legal-page').forEach(function (p) { p.classList.remove('visible'); });
